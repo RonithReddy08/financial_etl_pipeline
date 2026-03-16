@@ -1,31 +1,4 @@
-# Credentials — never commit these
+.venv
+__pycache__
 .env
-
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-dist/
-build/
-.venv/
-venv/
-
-# Data files (too large for Git, use DVC or document in README)
-data/raw/
-data/clean/
-
-# Logs
-logs/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
+*.pyc
