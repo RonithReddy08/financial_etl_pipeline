@@ -209,25 +209,6 @@ The rest of the pipeline (SQLAlchemy calls, mart refresh) works unchanged.
 2024-11-15 06:00:04  INFO  pipeline  — PIPELINE COMPLETE ✓  (2.8s)
 ```
 
----
-
-## Resume bullet points (copy-paste ready)
-
-```
-• Built end-to-end ETL pipeline extracting multi-currency financial data from 
-  REST APIs (Alpha Vantage), cleaning 500+ transactions in Python/pandas, 
-  and loading into a 3-layer PostgreSQL data warehouse with idempotent upserts
-
-• Implemented automated currency normalisation (USD ↔ KES/ZMW/ZAR/GHS/UGX), 
-  KPI calculation (budget variance %, burn rate), and anomaly detection with 
-  email alerting — reducing manual reporting effort by ~80%
-
-• Triggered scheduled Power BI dataset refreshes via REST API, enabling 
-  real-time financial dashboards with daily automated data updates
-```
-
----
-
 ## Author
 
-Ronith Reddy | [LinkedIn](https://linkedin.com/in/your-profile) | [GitHub](https://github.com/yourusername)
+Ronith Reddy | [LinkedIn](https://linkedin.com/in/ronithreddyy) | [GitHub](https://github.com/RonithReddy08)
