@@ -211,4 +211,4 @@ The rest of the pipeline (SQLAlchemy calls, mart refresh) works unchanged.
 
 ## Author
 
-Ronith Reddy | [LinkedIn](https://linkedin.com/in/ronithreddyy) | [GitHub](https://github.com/RonithReddy08)
+Ronith Reddy | LinkedIn:(https://www.linkedin.com/in/ronithreddyy/) Github: https://github.com/RonithReddy08
