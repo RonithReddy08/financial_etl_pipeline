@@ -1,0 +1,73 @@
+# =============================================================================
+# docker-compose.yml — Local Development Stack
+# =============================================================================
+# Spins up PostgreSQL + the ETL pipeline together.
+# Anyone can run this with zero setup beyond Docker.
+#
+# Usage:
+#   docker-compose up                    # run pipeline once against local PG
+#   docker-compose run etl --schedule    # run on daily schedule
+#   docker-compose run etl --dry-run     # transform only, no DB write
+#   docker-compose down -v               # tear down + delete volumes
+# =============================================================================
+
+version: "3.9"
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL — the data warehouse
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: financial_etl_db
+    environment:
+      POSTGRES_DB:       financial_pipeline
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: pipeline_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data          # persist data between runs
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql  # auto-init schema
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d financial_pipeline"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  # ETL Pipeline
+  # ---------------------------------------------------------------------------
+  etl:
+    build: .
+    container_name: financial_etl_pipeline
+    depends_on:
+      postgres:
+        condition: service_healthy     # wait for DB to be ready before running
+    environment:
+      DB_HOST:              postgres   # use service name, not localhost
+      DB_PORT:              5432
+      DB_NAME:              financial_pipeline
+      DB_USER:              postgres
+      DB_PASSWORD:          pipeline_password
+      ALPHA_VANTAGE_KEY:    ${ALPHA_VANTAGE_KEY:-demo}
+      # Optional — email alerts
+      SMTP_HOST:            ${SMTP_HOST:-}
+      SMTP_USER:            ${SMTP_USER:-}
+      SMTP_PASSWORD:        ${SMTP_PASSWORD:-}
+      ALERT_TO_EMAIL:       ${ALERT_TO_EMAIL:-}
+      # Optional — Power BI
+      POWERBI_CLIENT_ID:    ${POWERBI_CLIENT_ID:-}
+      POWERBI_CLIENT_SECRET: ${POWERBI_CLIENT_SECRET:-}
+      POWERBI_TENANT_ID:    ${POWERBI_TENANT_ID:-}
+      POWERBI_WORKSPACE_ID: ${POWERBI_WORKSPACE_ID:-}
+      POWERBI_DATASET_ID:   ${POWERBI_DATASET_ID:-}
+    volumes:
+      - ./logs:/app/logs              # expose logs to host for debugging
+      - ./data:/app/data              # expose raw/clean data to host
+    command: ["--records", "500"]     # run once with 500 transactions
+
+volumes:
+  pg_data:
+    driver: local
